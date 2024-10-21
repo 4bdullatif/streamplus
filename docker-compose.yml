@@ -1,0 +1,55 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: streamplus-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - app_data:/var/www/html
+      - ./app:/var/www/html/app
+      - ./resources:/var/www/html/resources
+      - ./routes:/var/www/html/routes
+      - ./public:/var/www/html/public
+      - ./lang:/var/www/html/lang
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    networks:
+      - streamplus
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=streamplus
+      - DB_USERNAME=root
+      - DB_PASSWORD=rootpassword
+
+  db:
+    image: mysql:lts
+    container_name: streamplus-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: streamplus
+      MYSQL_USER: streamplus_user
+      MYSQL_PASSWORD: streamplus_password
+      MYSQL_PORT: 3306
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3310:3306"
+    networks:
+      - streamplus
+
+networks:
+  streamplus:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
+  app_data:
+    driver: local
