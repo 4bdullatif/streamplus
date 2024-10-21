@@ -33,8 +33,9 @@ DB_PASSWORD=streamplus_password
 docker-compose up --build
 ```
 
-### 4. Run The Migrations
+### 4. Run The Migrations & Generate app secret
 ```bash
+docker exec -it streamplus-app php artisan key:generate
 docker exec -it streamplus-app php artisan migrate
 ```
 
